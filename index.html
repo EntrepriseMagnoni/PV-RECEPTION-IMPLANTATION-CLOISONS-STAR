@@ -210,8 +210,8 @@ canvas{display:block}
 <!-- Modal PDF -->
 <div class="overlay" id="overlay">
   <div class="modal">
-    <h3>PDF pret !</h3>
-    <p>Telechargez le PDF puis envoyez-le par WhatsApp a Arnaud.</p>
+    <h3>PDF genere !</h3>
+    <p>Le PDF se telecharge automatiquement. Si rien ne se passe, appuyez sur le bouton ci-dessous.</p>
     <a id="pdflink" href="#" download="PV_Implantation_STAR.pdf">Telecharger le PDF</a>
     <button onclick="document.getElementById('overlay').classList.remove('show')">Fermer</button>
   </div>
@@ -541,9 +541,16 @@ function genPDF() {
   var footer="Ce PV constitue un point d'arret (PA) au sens du plan de controle MAGNONI. La suite des travaux ne peut demarrer qu'apres signature du DONNEUR D'ORDRE. Document a conserver au dossier chantier.";
   doc.text(doc.splitTextToSize(footer,CW),M,y);
 
-  var uri=doc.output('datauristring');
-  document.getElementById('pdflink').href=uri;
-  document.getElementById('overlay').classList.add('show');
+  // Sur mobile, doc.save() gere le telechargement sur tous les navigateurs
+  try {
+    doc.save('PV_Implantation_STAR.pdf');
+    document.getElementById('overlay').classList.add('show');
+  } catch(e) {
+    // Fallback si save() echoue
+    var uri = doc.output('datauristring');
+    document.getElementById('pdflink').href = uri;
+    document.getElementById('overlay').classList.add('show');
+  }
 }
 </script>
 </body>
